@@ -1,46 +1,28 @@
 from cyberfood.models import create_db
 import telebot
 import os
-from cyberfood.keyboard_markup import launch_screen
+from cyberfood.auth_funcs import AuthFunc
 
 
 bot = telebot.TeleBot(os.getenv("ALPHABOT_KEY"), parse_mode="HTML")
+authViews = AuthFunc(bot)
 
 
 @bot.message_handler(commands=['start'])
 def landing(message):
-    landing_body(message)
-
-
-def landing_body(message):
-    resp = """
-        <b>Hello, Welcome to CyberSpace Ghana</b>
-    Let us help you get the food of your choice right away !
-    Select an Option:
-    1. Sign In to Your Account - /login
-    2. Register For An Account - /register
-    3. Forgot Password - /forgot
-    """
-    bot.send_message(message.chat.id, resp)
+    authViews.landing_body(message)
 
 
 @bot.message_handler(commands=["login"])
 def login(message):
-    login_body(message)
+    authViews.login_body(message,get_user_credentials)
 
-
-def login_body(message):
-    resp = """
-    <b>Kindly enter your username and pin...
-    Separate them with a single space..</b>
-    <i>Eg. uname 23445</i>
-    """
-    msg = bot.reply_to(message, resp)
-    bot.register_next_step_handler(msg, get_user_credentials)
 
 def get_user_credentials(message):
-    if "/" in message.text:
-        landing_body(message)
+    if "/register" in message.text:
+        authViews.register_body(message, verify_and_register_user)
+    elif "/" in message.text:
+        authViews.landing_body(message)
     else:
         try:
             chat_id = message.chat.id
@@ -63,7 +45,7 @@ def forgot_password(message):
 
 def forgot_pwd(message):
     if "/" in message.text:
-        landing_body(message)
+        authViews.landing_body(message)
     else:
         try:
             chat_id = message.chat.id
@@ -72,6 +54,7 @@ def forgot_pwd(message):
             bot.register_next_step_handler(msg, verify_token)
         except:
             bot.reply_to(message, "Something Went Wrong")
+
 
 def verify_token(message):
     try:
@@ -91,17 +74,7 @@ def verify_token(message):
 
 @bot.message_handler(commands=['register'])
 def register(message):
-    resp = """
-    <b>Enter the info on a line each</b>
-    <p>Full Name:</p>
-    <p>Phone:</p>
-    <p>Hostel:</p>
-    <p>Room Number:</p>
-    <p>Username:</p>
-    Enter the details the way it is written
-    """
-    msg = bot.send_message(message.chat.id, resp)
-    bot.register_next_step_handler(msg, verify_token)
+    authViews.register_body(message, verify_and_register_user)
 
 
 def verify_and_register_user(message):
