@@ -4,6 +4,7 @@ import os
 
 bot = telebot.TeleBot(os.getenv("ALPHABOT_KEY"), parse_mode="HTML")
 
+
 def launch_screen():
     markup = InlineKeyboardMarkup()
     markup.row_width = 3

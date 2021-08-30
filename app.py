@@ -1,12 +1,12 @@
 from cyberfood.models import create_db
-from cyberfood.keyboard_markup import launch_screen
+from cyberfood.keyboard_markup import MarkUpKeyboards
 import telebot
 import os
 import time
 
 
 bot = telebot.TeleBot(os.getenv("ALPHABOT_KEY"), parse_mode="HTML")
-
+mark_keyboard = MarkUpKeyboards(bot=bot)
 
 @bot.message_handler(commands=['start'])
 def landing(message):
@@ -18,8 +18,7 @@ def landing(message):
         2. Register - /register
         3. Forgot Pin - /forgot
     """
-    bot.send_message(message.chat.id, resp,
-                     reply_markup=launch_screen)
+    bot.send_message(message.chat.id, resp)
 
 
 @bot.message_handler(commands=['login'])
