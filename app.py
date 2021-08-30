@@ -1,7 +1,7 @@
 from cyberfood.models import create_db
 import telebot
 import os
-import time
+from cyberfood.keyboard_markup import launch_screen
 
 
 bot = telebot.TeleBot(os.getenv("ALPHABOT_KEY"), parse_mode="HTML")
@@ -11,16 +11,16 @@ bot = telebot.TeleBot(os.getenv("ALPHABOT_KEY"), parse_mode="HTML")
 def landing(message):
     resp = f"""
         <b>Hello, Welcome to CyberSpace Ghana</b>
-        Let us help you get the food of your choice right away !
-        Select an Option:
-        1. Login - /login
-        2. Register - /register
-        3. Forgot Pin - /forgot
+    Let us help you get the food of your choice right away !
+    Select an Option:
+    1. Sign In to Your Account - /login
+    2. Register For An Account - /register
+    3. Forgot Password - /forgot
     """
     bot.send_message(message.chat.id, resp)
 
 
-@bot.message_handler(commands=['login'])
+@bot.message_handler(command=["login"])
 def login(message):
     resp = """
     <b>Kindly enter your username and pin...
@@ -42,10 +42,10 @@ def get_user_credentials(message):
 # =============================================
 
 
-@bot.message_handler(commands=['forgot'])
+@bot.message_handler(command=['forgot'])
 def forgot_password(message):
     resp = """
-    <b>Kindly Enter your Email to receive a token</b>
+    <b>Kindly Enter your Email: </b>
     """
     msg = bot.reply_to(message, resp)
     bot.register_next_step_handler(msg, forgot_pwd)
@@ -74,11 +74,35 @@ def verify_token(message):
     except:
         bot.reply_to(message, "Something Went Wrong")
 
+# =============== REGISTER ROUTE
+
+
+@bot.message_handler(command=['register'])
+def register(message):
+    resp = """
+    <b>Enter the info on a line each</b>
+    <p>Full Name:</p>
+    <p>Phone:</p>
+    <p>Hostel:</p>
+    <p>Room Number:</p>
+    <p>Username:</p>
+    Enter the details the way it is written
+    """
+    msg = bot.send_message(message.chat.id, resp)
+    bot.register_next_step_handler(msg, verify_token)
+
+
+def verify_and_register_user(message):
+    try:
+        chat_id = message.chat.id
+        print(message.text)
+        bot.send_message(message.chat.id, "Info Received")
+    except:
+        bot.reply_to(message, "Something Went Wrong")
+
+
+
 
 if __name__ == '__main__':
     create_db()
-    while True:
-        try:
-            bot.polling()
-        except Exception as e:
-            time.sleep(15)
+    bot.polling(none_stop=True)
