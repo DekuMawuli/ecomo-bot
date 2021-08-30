@@ -1,6 +1,8 @@
 from models import create_db
 import telebot
 import os
+import time
+
 bot = telebot.TeleBot(os.getenv("ALPHABOT_KEY"), parse_mode="HTML")
 
 
@@ -14,7 +16,7 @@ def landing(message):
         2. Register - /register
         3. Forgot Pin - /forgot
     """
-    bot.reply_to(message, resp)
+    bot.send_message(message.chat.id, resp)
 
 
 @bot.message_handler(commands=['login'])
@@ -74,4 +76,8 @@ def verify_token(message):
 
 if __name__ == '__main__':
     create_db()
-    bot.polling()
+    while True:
+        try:
+            bot.polling()
+        except Exception as e:
+            time.sleep(15)
