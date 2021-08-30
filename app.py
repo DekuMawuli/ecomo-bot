@@ -1,7 +1,9 @@
-from models import create_db
+from cyberfood.models import create_db
+from cyberfood.keyboard_markup import launch_screen
 import telebot
 import os
 import time
+
 
 bot = telebot.TeleBot(os.getenv("ALPHABOT_KEY"), parse_mode="HTML")
 
@@ -9,14 +11,15 @@ bot = telebot.TeleBot(os.getenv("ALPHABOT_KEY"), parse_mode="HTML")
 @bot.message_handler(commands=['start'])
 def landing(message):
     resp = f"""
-        <b>Hello Dear, Welcome to CyberSpace Ghana</b>
+        <b>Hello, Welcome to CyberSpace Ghana</b>
         Let us help you get the food of your choice right away !
         Select an Option:
         1. Login - /login
         2. Register - /register
         3. Forgot Pin - /forgot
     """
-    bot.send_message(message.chat.id, resp)
+    bot.send_message(message.chat.id, resp,
+                     reply_markup=mark_keyboard.launch_screen)
 
 
 @bot.message_handler(commands=['login'])
