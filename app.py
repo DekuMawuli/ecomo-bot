@@ -7,7 +7,7 @@ bot = telebot.TeleBot(os.getenv("ALPHABOT_KEY"), parse_mode="HTML")
 @bot.message_handler(commands=['start'])
 def landing(message):
     resp = f"""
-        <b>Hello {message.username}, Welcome to CyberSpace Ghana</b>
+        <b>Hello Dear, Welcome to CyberSpace Ghana</b>
         Let us help you get the food of your choice right away !
         Select an Option:
         1. Login - /login
@@ -70,6 +70,7 @@ def verify_token(message):
 
     except:
         bot.reply_to(message, "Something Went Wrong")
+
 
 if __name__ == '__main__':
     create_db()
