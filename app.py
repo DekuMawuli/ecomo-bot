@@ -1,12 +1,11 @@
 from cyberfood.models import create_db
-from cyberfood.keyboard_markup import MarkUpKeyboards
 import telebot
 import os
 import time
 
 
 bot = telebot.TeleBot(os.getenv("ALPHABOT_KEY"), parse_mode="HTML")
-mark_keyboard = MarkUpKeyboards(bot=bot)
+
 
 @bot.message_handler(commands=['start'])
 def landing(message):
